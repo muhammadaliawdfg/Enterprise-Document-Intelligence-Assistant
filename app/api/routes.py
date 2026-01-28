@@ -1,6 +1,7 @@
 import os
 from fastapi import APIRouter, UploadFile,File,HTTPException
 import shutil
+from app.services.ingestion import ingest_pdf
 router = APIRouter()
 UPLOAD_DIR = "storage/documents"
 @router.get("/health")
@@ -19,7 +20,11 @@ async def upload_file(file: UploadFile = File(...)):
 
     with open(file_path, "wb") as f:
         shutil.copyfileobj(file.file, f)
+    
+    chunks = ingest_pdf(file_path, file.filename)
     return {
         "message": "File uploaded successfully",
-        "filename": file.filename
+        "filename": file.filename,
+        "Total Chunks": len(chunks),
+        "sample_chunks": chunks[:3]
         }      
