@@ -6,3 +6,5 @@ openai
 chromadb
 faiss-cpu
 pydantic
+sentence-transformers
+torch

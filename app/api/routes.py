@@ -2,6 +2,7 @@ import os
 from fastapi import APIRouter, UploadFile,File,HTTPException
 import shutil
 from app.services.ingestion import ingest_pdf
+from app.services.embeddings import EmbeddingService
 router = APIRouter()
 UPLOAD_DIR = "storage/documents"
 @router.get("/health")
@@ -22,9 +23,13 @@ async def upload_file(file: UploadFile = File(...)):
         shutil.copyfileobj(file.file, f)
     
     chunks = ingest_pdf(file_path, file.filename)
+
+    # module 3
+    embedding_service = EmbeddingService()
+    embedded_chunks = embedding_service.embed_chunks(chunks)
     return {
         "message": "File uploaded successfully",
         "filename": file.filename,
         "Total Chunks": len(chunks),
-        "sample_chunks": chunks[:3]
+        "embedding_dim": len(embedded_chunks[0]["embedding"])
         }      
