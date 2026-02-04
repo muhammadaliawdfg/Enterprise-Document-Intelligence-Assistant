@@ -14,3 +14,4 @@ vnvv/
 
 # Chroma DB / Storage
 storage/
+.env
