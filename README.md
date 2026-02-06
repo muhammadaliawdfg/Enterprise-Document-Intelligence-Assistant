@@ -19,8 +19,9 @@ The system follows a modular architecture with the following components:
 
 ### 1. API Layer
 - **FastAPI**: Modern, fast web framework for building APIs
-- **CORS Middleware**: Handles cross-origin resource sharing
+- **CORS Middleware**: Handles cross-origin resource sharing for frontend integration
 - **RESTful Endpoints**: Clean API design for document management and querying
+- **Frontend Integration**: Designed to work seamlessly with a React/Vue/Angular frontend
 
 ### 2. Document Processing Pipeline
 - **PDF Parser**: Extracts text content from PDF documents
@@ -145,6 +146,9 @@ uvicorn app.main:app --reload --port 8000
 
 ## Usage
 
+### Frontend Integration
+The backend is designed to work seamlessly with a frontend application. The CORS middleware is configured to allow requests from `http://localhost:3000`, which is typically used for React development servers.
+
 ### Uploading Documents
 1. Navigate to the `/docs` endpoint to access the API documentation
 2. Use the `/upload` endpoint to upload PDF documents
@@ -153,6 +157,9 @@ uvicorn app.main:app --reload --port 8000
 ### Querying Documents
 1. Use the `/query` endpoint to ask questions about your documents
 2. The system will return answers with citations to the source documents
+
+### API Documentation
+Access the interactive API documentation at `http://localhost:8000/docs` to test endpoints directly in your browser.
 
 ## Project Structure
 
@@ -188,6 +195,13 @@ edia-backend/
 
 ## Development
 
+### Frontend Integration
+The backend is designed to work with a frontend application. The CORS settings allow requests from `http://localhost:3000` by default, which is commonly used for React development servers. To integrate with your frontend:
+
+1. Configure your frontend to make requests to `http://localhost:8000`
+2. The API endpoints are available at the paths documented in the API section
+3. For production deployment, update the CORS origins in `app/main.py`
+
 ### Testing
 Run the test suite:
 ```bash
@@ -211,12 +225,26 @@ The project follows PEP 8 coding standards. Consider using linters like flake8 o
 - Embedding caching could be implemented for improved performance
 - Asynchronous processing for large documents
 
+## Deployment
+
+### Backend Deployment
+- Set up the required environment variables (especially OPENAI_API_KEY)
+- Ensure sufficient memory for processing large documents
+- Configure the production server (e.g., using Gunicorn with Nginx)
+- Update CORS settings to include your production frontend URL
+
+### Frontend Integration in Production
+- Update the API base URL in your frontend to point to your deployed backend
+- Ensure CORS settings in `app/main.py` include your production domain
+- Consider using environment variables for different environments (dev/staging/prod)
+
 ## Troubleshooting
 
 ### Common Issues
 - **OpenAI API Key**: Ensure your API key is correctly set in the environment
 - **PDF Format**: Verify that uploaded PDFs are not password-protected or corrupted
 - **Memory Usage**: Large documents may require significant memory for processing
+- **CORS Errors**: Check that your frontend origin is included in the CORS middleware settings
 
 ### Logging
 The application uses Python's logging module to record important events and errors. Check logs for troubleshooting information.
