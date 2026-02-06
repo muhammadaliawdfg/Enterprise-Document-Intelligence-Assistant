@@ -82,24 +82,27 @@ def generate_answer(prompt: str) -> str:
 # -----------------------------
 def extract_sources(retrieved_chunks: List[Dict]) -> List[Dict]:
 
-    seen = set()
+    seen_docs = set()
     sources = []
 
     for c in retrieved_chunks:
-        key = (c["metadata"].get("source"),
-               c["metadata"].get("page_number"))
 
-        if key not in seen:
-            seen.add(key)
+        filename = c["metadata"].get("source")
+        page = c["metadata"].get("page_number")
+
+        # only first occurrence per document
+        if filename not in seen_docs:
+            seen_docs.add(filename)
 
             sources.append({
-                "document_name": c["metadata"].get("document_name"),
-                "source": c["metadata"].get("source"),
-                "page_number": c["metadata"].get("page_number"),
-                "chunk_id": c["metadata"].get("chunk_id")
+                "documentName": filename,
+                "pageNumber": page,
+                "text": c.get("text")
             })
 
-    return sources
+    # limit citations (ChatGPT style)
+    return sources[:3]
+
 
 
 # -----------------------------

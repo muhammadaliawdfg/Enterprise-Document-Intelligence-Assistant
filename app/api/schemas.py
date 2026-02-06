@@ -1,7 +1,7 @@
 # app/api/schemas.py
 
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 
 
 # ---------------- Query Request ----------------
@@ -12,10 +12,9 @@ class QueryRequest(BaseModel):
 
 # ---------------- Source Model ----------------
 class Source(BaseModel):
-    document_name: str
-    source: str
-    page_number: int
-    chunk_id: str
+    documentName: str
+    pageNumber: Optional[int] = None
+    text: str
 
 
 # ---------------- Query Response ----------------
