@@ -13,16 +13,16 @@ class Retriever:
         Retrieve top-k relevant chunks from vector database
         """
 
-        # 1️⃣ Generate query embedding
+        # Generate query embedding
         query_embedding = get_embedding(query)
 
-        # 2️⃣ Search vector database
+        # Search vector database
         results = self.vector_db.similarity_search_by_vector(
             query_embedding,
             k=self.top_k
         )
 
-        # 3️⃣ Format results with metadata for RAG + Citation
+        # Format results with metadata for RAG + Citation
         retrieved_chunks = []
 
         for r in results:

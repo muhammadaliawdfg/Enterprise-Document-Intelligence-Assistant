@@ -21,9 +21,9 @@ load_dotenv(dotenv_path=".env", override=True)
 openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
-# -----------------------------
+
 # RETRIEVE
-# -----------------------------
+
 def retrieve_chunks(query: str, top_k: int = 5) -> List[Dict]:
     """
     Retrieve top-k most relevant chunks from vector store.
@@ -38,9 +38,9 @@ def retrieve_chunks(query: str, top_k: int = 5) -> List[Dict]:
     return results
 
 
-# -----------------------------
+
 # BUILD PROMPT
-# -----------------------------
+
 def build_prompt(retrieved_chunks: List[Dict], query: str) -> str:
     docs_text = "\n\n".join([c["text"] for c in retrieved_chunks])
 
@@ -63,9 +63,9 @@ Answer:
     return prompt
 
 
-# -----------------------------
+
 # GENERATE ANSWER
-# -----------------------------
+
 def generate_answer(prompt: str) -> str:
     response = openai_client.chat.completions.create(
         model="gpt-4o-mini",
@@ -77,9 +77,9 @@ def generate_answer(prompt: str) -> str:
     return answer
 
 
-# -----------------------------
-# EXTRACT SOURCES (MODULE 6 CORE)
-# -----------------------------
+
+# EXTRACT SOURCES 
+
 def extract_sources(retrieved_chunks: List[Dict]) -> List[Dict]:
 
     seen_docs = set()
@@ -100,14 +100,14 @@ def extract_sources(retrieved_chunks: List[Dict]) -> List[Dict]:
                 "text": c.get("text")
             })
 
-    # limit citations (ChatGPT style)
+    
     return sources[:3]
 
 
 
-# -----------------------------
-# FULL RAG PIPELINE
-# -----------------------------
+
+#  RAG PIPELINE
+
 def rag_pipeline(query: str, top_k: int = 5) -> Dict:
     """
     Full RAG pipeline:
@@ -116,7 +116,7 @@ def rag_pipeline(query: str, top_k: int = 5) -> Dict:
 
     logger.info(f"RAG pipeline started for query: {query}")
 
-    # 1️⃣ Retrieve
+    #  Retrieve
     chunks = retrieve_chunks(query, top_k=top_k)
 
     if not chunks:
@@ -125,13 +125,13 @@ def rag_pipeline(query: str, top_k: int = 5) -> Dict:
             "sources": []
         }
 
-    # 2️⃣ Prompt
+    # Prompt
     prompt = build_prompt(chunks, query)
 
-    # 3️⃣ Generate Answer
+    #Generate Answer
     answer = generate_answer(prompt)
 
-    # 4️⃣ Extract Sources ⭐ Module 6
+    #  Extract Sources ⭐ Module 6
     sources = extract_sources(chunks)
     if "Information not found in documents." in answer:
         sources = []  # Clear sources if answer indicates no info found

@@ -1,4 +1,4 @@
-# router.py
+
 from fastapi import APIRouter, UploadFile, File, HTTPException
 import os
 import shutil
@@ -10,15 +10,15 @@ from app.services.vector_store import VectorStoreService
 from app.services.rag import rag_pipeline
 from app.api.schemas import QueryRequest, QueryResponse
 
-# ---------------- Logging Setup ----------------
+#  Logging Setup 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# ---------------- Router ----------------
+# Router
 router = APIRouter(tags=["EDIA API"])
 UPLOAD_DIR = "storage/documents"
 
-# ---------------- Health Check ----------------
+#Health Check 
 @router.get("/health")
 def health_check():
     return {
@@ -27,7 +27,7 @@ def health_check():
         "version": "1.0"
     }
 
-# ---------------- Upload Endpoint ----------------
+# Upload Endpoint 
 @router.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
 
@@ -58,7 +58,7 @@ async def upload_file(file: UploadFile = File(...)):
             detail="File upload failed"
         )
 
-    # ---------------- Module 1–2: Ingestion ----------------
+    #  Ingestion
     chunks = ingest_pdf(file_path, file.filename)
     if not chunks:
         raise HTTPException(
@@ -66,11 +66,11 @@ async def upload_file(file: UploadFile = File(...)):
             detail="No text found in PDF"
         )
 
-    # ---------------- Module 3: Embeddings ----------------
+    # Embeddings 
     embedding_service = EmbeddingService()
     embedded_chunks = embedding_service.embed_chunks(chunks)
 
-    # ---------------- Module 4: Vector Store ----------------
+    # Vector Store 
     vector_store = VectorStoreService()
     documents_for_db = [
         {
@@ -92,7 +92,7 @@ async def upload_file(file: UploadFile = File(...)):
         "embedding_dim": len(embedded_chunks[0]["embedding"])
     }
 
-# ---------------- Query Endpoint (Module 5 RAG) ----------------
+# Query Endpoint 
 @router.post("/query", response_model=QueryResponse)
 async def query_documents(request: QueryRequest):
 
